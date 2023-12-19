@@ -1,1 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Administration System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 1em;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #4CAF50;
+      overflow: hidden;
+    }
+
+    nav a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    section {
+      margin: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Healthcare Administration System</h1>
+  </header>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#patients">Patients</a>
+    <a href="#doctors">Doctors</a>
+    <a href="#appointments">Appointments</a>
+  </nav>
+
+  <section id="home">
+    <h2>Welcome to the Healthcare Administration System</h2>
+    <p>This system helps manage patient records, doctor information, and appointments.</p>
+  </section>
+
+  <section id="patients">
+    <h2>Patients</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="patientTableBody">
+        <!-- Patient data will be dynamically added here using JavaScript -->
+      </tbody>
+    </table>
+
+    <form id="addPatientForm">
+      <h3>Add New Patient</h3>
+      <label for="patientName">Name :</label>
+      <input type="text" id="patientName" required>
+      <label for="patientAge">Age:</label>
+      <input type="number" id="patientAge" required>
+      <button type="button" onclick="addPatient()">Add Patient</button>
+    </form>
+  </section>
+
+  <section id="doctors">
+    <h2>Doctors</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Specialization</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="doctorTableBody">
+        <!-- Doctor data will be dynamically added here using JavaScript -->
+      </tbody>
+    </table>
+
+    <form id="addDoctorForm">
+      <h3>Add New Doctor</h3>
+      <label for="doctorName">Name:</label>
+      <input type="text" id="doctorName" required>
+      <label for="doctorSpecialization">Specialization:</label>
+      <input type="text" id="doctorSpecialization" required>
+      <button type="button" onclick="addDoctor()">Add Doctor</button>
+    </form>
+  </section>
+
+  <section id="appointments">
+    <h2>Appointments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient Name</th>
+          <th>Doctor Name</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="appointmentTableBody">
+        <!-- Appointment data will be dynamically added here using JavaScript -->
+      </tbody>
+    </table>
+
+    <form id="addAppointmentForm">
+      <h3>Add New Appointment</h3>
+      <label for="patientSelect">Patient:</label>
+      <select id="patientSelect" required>
+        <!-- Patient options will be dynamically added here using JavaScript -->
+      </select>
+      <label for="doctorSelect">Doctor:</label>
+      <select id="doctorSelect" required>
+        <!-- Doctor options will be dynamically added here using JavaScript -->
+      </select>
+      <label for="appointmentDate">Date:</label>
+      <input type="date" id="appointmentDate" required>
+      <label for="appointmentTime">Time:</label>
+      <input type="time" id="appointmentTime" required>
+      <button type="button" onclick="addAppointment()">Add Appointment</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2023 Healthcare Administration System</p>
+  </footer>
+
+  <script>
+    // Sample data (replace with actual data from the backend)
+    const patients = [
+      { id: 1, name: 'John Doe', age: 30 },
+      { id: 2, name: 'Jane Smith', age: 25 }
+    ];
+
+    const doctors = [
+      { id: 1, name: 'Dr. Smith', specialization: 'Cardiology' },
+      { id: 2, name: 'Dr. Johnson', specialization: 'Orthopedics' }
+    ];
+
+    const appointments = [
+      { id: 1, patientId: 1, doctorId: 1, date: '2023-01-01', time: '10:00 AM' },
+      { id: 2, patientId: 2, doctorId: 2, date: '2023-01-02', time: '11:00 AM' }
+    ];
+
+    // Function to initialize tables and forms
+    function initialize() {
+      displayPatients();
+      displayDoctors();
+      displayAppointments();
+      populatePatientSelect();
+      populateDoctorSelect();
+    }
+
+    // Function to display patients in the table
+    function displayPatients() {
+      const patientTableBody = document.getElementById('patientTableBody');
+      patientTableBody.innerHTML = '';
+
+      patients.forEach(patient => {
+        const row = patientTableBody.insertRow();
+        row.innerHTML = `
+        <td>${patient.id}</td>
+        <td>${patient.name}</td>
+        <td>${patient.age}</td>
+        <td><button onclick="deletePatient(${patient.id})">Delete</button></td>
+      `;
+    });
+  }
+
+  // Function to add a new patient
+  function addPatient() {
+    const patientName = document.getElementById('patientName').value;
+    const patientAge = document.getElementById('patientAge').value;
+
+    if (patientName && patientAge) {
+      const newPatient = {
+        id: patients.length + 1,
+        name: patientName,
+        age: patientAge
+      };
+
+      patients.push(newPatient);
+      displayPatients();
+      clearForm('addPatientForm');
+    }
+  }
+
+  // Function to delete a patient
+  function deletePatient(patientId) {
+    patients = patients.filter(patient => patient.id !== patientId);
+    displayPatients();
+  }
+
+  // Function to display doctors in the table
+  function displayDoctors() {
+    const doctorTableBody = document.getElementById('doctorTableBody');
+    doctorTableBody.innerHTML = '';
+
+    doctors.forEach(doctor => {
+      const row = doctorTableBody.insertRow();
+      row.innerHTML = `
+        <td>${doctor.id}</td>
+        <td>${doctor.name}</td>
+        <td>${doctor.specialization}</td>
+        <td><button onclick="deleteDoctor(${doctor.id})">Delete</button></td>
+      `;
+    });
+  }
+
+  // Function to add a new doctor
+  function addDoctor() {
+    const doctorName = document.getElementById('doctorName').value;
+    const doctorSpecialization = document.getElementById('doctorSpecialization').value;
+
+    if (doctorName && doctorSpecialization) {
+      const newDoctor = {
+        id: doctors.length + 1,
+        name: doctorName,
+        specialization: doctorSpecialization
+      };
+
+      doctors.push(newDoctor);
+      displayDoctors();
+      clearForm('addDoctorForm');
+    }
+  }
+
+  // Function to delete a doctor
+  function deleteDoctor(doctorId) {
+    doctors = doctors.filter(doctor => doctor.id !== doctorId);
+    displayDoctors();
+  }
+
+  // Function to display appointments in the table
+  function displayAppointments() {
+    const appointmentTableBody = document.getElementById('appointmentTableBody');
+    appointmentTableBody.innerHTML = '';
+
+    appointments.forEach(appointment => {
+      const patient = findPatientById(appointment.patientId);
+      const doctor = findDoctorById(appointment.doctorId);
+
+      const row = appointmentTableBody.insertRow();
+      row.innerHTML = `
+        <td>${appointment.id}</td>
+        <td>${patient ? patient.name : ''}</td>
+        <td>${doctor ? doctor.name : ''}</td>
+        <td>${appointment.date}</td>
+        <td>${appointment.time}</td>
+        <td><button onclick="deleteAppointment(${appointment.id})">Delete</button></td>
+      `;
+    });
+  }
+
+  // Function to add a new appointment
+  function addAppointment() {
+    const patientId = document.getElementById('patientSelect').value;
+    const doctorId = document.getElementById('doctorSelect').value;
+    const appointmentDate = document.getElementById('appointmentDate').value;
+    const appointmentTime = document.getElementById('appointmentTime').value;
+
+    if (patientId && doctorId && appointmentDate && appointmentTime) {
+      const newAppointment = {
+        id: appointments.length + 1,
+        patientId: parseInt(patientId),
+        doctorId: parseInt(doctorId),
+        date: appointmentDate,
+        time: appointmentTime
+      };
+
+      appointments.push(newAppointment);
+      displayAppointments();
+      clearForm('addAppointmentForm');
+    }
+  }
+
+  // Function to delete an appointment
+  function deleteAppointment(appointmentId) {
+    appointments = appointments.filter(appointment => appointment.id !== appointmentId);
+    displayAppointments();
+  }
+
+  // Function to populate the patient dropdown in the appointment form
+  function populatePatientSelect() {
+    const patientSelect = document.getElementById('patientSelect');
+
+    patients.forEach(patient => {
+      const option = document.createElement('option');
+      option.value = patient.id;
+      option.text = patient.name;
+      patientSelect.add(option);
+    });
+  }
+
+  // Function to populate the doctor dropdown in the appointment form
+  function populateDoctorSelect() {
+    const doctorSelect = document.getElementById('doctorSelect');
+
+    doctors.forEach(doctor => {
+      const option = document.createElement('option');
+      option.value = doctor.id;
+      option.text = doctor.name;
+      doctorSelect.add(option);
+    });
+  }
+
+  // Function to find a patient by ID
+  function findPatientById(patientId) {
+    return patients.find(patient => patient.id === patientId);
+  }
+
+  // Function to find a doctor by ID
+  function findDoctorById(doctorId) {
+    return doctors.find(doctor => doctor.id === doctorId);
+  }
+
+  // Function to clear a form
+  function clearForm(formId) {
+    document.getElementById(formId).reset();
+  }
+
+  // Initialize the system
+  initialize();
+</script>
+</body>
+</html>
